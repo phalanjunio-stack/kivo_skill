@@ -1,17 +1,31 @@
 ---
 name: kivo-motion
-description: Criar motions HyperFrames com hierarquia, timing e movimento relacionados ao conteúdo.
+description: Qual motion da biblioteca do KIVO usar para cada momento do vídeo, com os campos e as posições certas, e quando criar um HyperFrames novo.
 ---
 
-# kivo-motion
+# kivo-motion · qual motion usar
 
-Prioridade: pedido atual e correções explícitas, decisões deste projeto, regras da casa, hábitos observados e, por último, esta skill. A identidade vem do kit atual. Não transforme um teste em gosto geral nem transporte cores, fontes ou decisões entre marcas.
+Primeiro a biblioteca (get_motion_library), depois criar do zero. Os modelos da biblioteca já têm fontes, zona segura, curvas e saída certas; um motion novo só quando nenhum serve.
 
-Leia get_motion_guide antes de usar a API do KIVO. Use GSAP com timeline pausada em window.__timelines e duração igual ao trecho. Garanta que fontes carregaram e que buscar um tempo específico produz o mesmo quadro.
-Desenhe primeiro a composição estática. Depois estabeleça ordem de atenção: entrada, leitura, saída. Não anime todos os elementos com a mesma intensidade ao mesmo tempo.
-Escolha easing pelo comportamento: desaceleração para chegada, aceleração para saída, linear para fluxo contínuo. Back/elastic são recursos expressivos, não padrão para logos clínicos. Confira a curva na documentação/visualizador do GSAP.
-Sincronize a ênfase com a palavra ou gesto relevante; música é outro apoio, não uma obrigação de cortar em toda batida. Ajuste tempo de leitura ao texto real, com pausa estável quando ajudar.
-Crie movimentos que expliquem: conexão, fluxo, comparação ou percurso. Diagramas médicos devem ser esquemáticos e baseados no conteúdo fornecido, sem simular comprovação científica.
-Evite reutilizar em todas as cenas a sequência cartão + blur + linha + partículas. Escolha uma família coerente e varie de acordo com a função.
-Faça check_motion em entrada, leitura e saída para detectar cortes e sobreposição. Para avaliar fluidez, reproduza o trecho completo; não declare essa validação concluída apenas com screenshots.
-Fontes: [GSAP Easing](https://gsap.com/docs/v3/Eases/) e [IBM — princípios de animação](https://www.ibm.com/design/language/animation/classic-principles/). A aplicação ao KIVO acima é uma adaptação editorial, não uma exigência dessas fontes.
+## Os quatro do estilo das referências (27/11/2026)
+
+| Momento | Modelo | Campos | Onde |
+|---|---|---|---|
+| Palavra-chave enquanto a pessoa fala | `destaque_fala` | `linha` (2–5 palavras ditas antes), `destaque` (a palavra), `apoio` (2–4 depois, opcional) | y 1060 (peito), por cima do vídeo |
+| Frase de impacto / gancho / virada | `palavra_gigante` | `fundo` (1 palavra, caixa alta), `linha`, `destaque`, `tema` 'escuro' ou 'claro' | y 1020; em cena de texto, sobre fundo do kit |
+| "Não é X, é Y", antes × agora, frase escrita | `escrita_palavras` | `frase` com `*destaque*` e `~riscada~`; `fundo` null (por cima do vídeo), 'escuro' ou 'claro' (cena só de texto) | y 900–1060 |
+| Fechamento com a marca | `revelacao_logo` | `logo` (imagem) ou `nome`, `assinatura`, `fundo` | y 900 |
+
+Todos aceitam `cor` = [r,g,b,r,g,b] de 0 a 1 (degradê das cores de destaque do kit) e `duracao`.
+
+## Regras de uso
+- Um motion por ideia; nunca dois ao mesmo tempo na tela.
+- Entrada 0,1 s depois da palavra dita; duração até o fim da frase (mínimo 0,5 s + 0,3 s por palavra).
+- Rosto e legenda livres: confira cada um com get_frames no meio da duração.
+- Não use o mesmo modelo mais de 3 vezes seguidas; alterne `destaque_fala` com B-roll e respiro.
+- Em comercial sem fala, `destaque_fala` funciona como título (por cima do plano do aparelho, sem pessoa).
+
+## Criar um motion novo (só quando nenhum serve)
+- get_motion_guide antes; create_motion; check_motion em entrada, leitura e saída.
+- Siga o ofício do guia: chegada com cauda longa, saída 40–50% mais curta, título parado depois de chegar, palavras entrando com desfoque 6 px → 0 em 0,13 s.
+- Desenho fotorrealista (pele, aparelho, CGI) não é motion: é Spaces (imagem/vídeo de IA).
